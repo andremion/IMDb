@@ -1,13 +1,14 @@
 package com.andremion.imdb.ui.details
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.andremion.imdb.placeholder.PlaceholderContent
+import androidx.fragment.app.Fragment
 import com.andremion.imdb.databinding.FragmentItemDetailBinding
+import com.andremion.imdb.placeholder.PlaceholderContent
+import com.andremion.imdb.ui.movies.model.MovieModel
 
 /**
  * A fragment representing a single Item detail screen.
@@ -20,7 +21,7 @@ class ItemDetailFragment : Fragment() {
     /**
      * The placeholder content this fragment is presenting.
      */
-    private var item: PlaceholderContent.PlaceholderItem? = null
+    private var item: MovieModel? = null
 
     lateinit var itemDetailTextView: TextView
 
@@ -51,12 +52,12 @@ class ItemDetailFragment : Fragment() {
         _binding = FragmentItemDetailBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
-        binding.toolbarLayout?.title = item?.content
+        binding.toolbarLayout?.title = item?.title
 
         itemDetailTextView = binding.itemDetail
         // Show the placeholder content as text in a TextView.
         item?.let {
-            itemDetailTextView.text = it.details
+            itemDetailTextView.text = it.title
         }
 
         return rootView

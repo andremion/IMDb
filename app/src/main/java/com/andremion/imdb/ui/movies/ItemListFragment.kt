@@ -1,22 +1,21 @@
 package com.andremion.imdb.ui.movies
 
-import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.andremion.imdb.R
-import com.andremion.imdb.placeholder.PlaceholderContent;
 import com.andremion.imdb.databinding.FragmentItemListBinding
-import com.andremion.imdb.databinding.ItemListContentBinding
+import com.andremion.imdb.placeholder.PlaceholderContent
 import com.andremion.imdb.ui.details.ItemDetailFragment
+import com.andremion.imdb.ui.movies.model.MovieModel
+import com.bumptech.glide.Glide
 
 /**
  * A Fragment representing a list of Pings. This fragment
@@ -85,7 +84,7 @@ class ItemListFragment : Fragment() {
          * a single pane layout or two pane layout
          */
         val onClickListener = View.OnClickListener { itemView ->
-            val item = itemView.tag as PlaceholderContent.PlaceholderItem
+            val item = itemView.tag as MovieModel
             val bundle = Bundle()
             bundle.putString(
                 ItemDetailFragment.ARG_ITEM_ID,
@@ -105,7 +104,7 @@ class ItemListFragment : Fragment() {
          * experience on larger screen devices
          */
         val onContextClickListener = View.OnContextClickListener { v ->
-            val item = v.tag as PlaceholderContent.PlaceholderItem
+            val item = v.tag as MovieModel
             Toast.makeText(
                 v.context,
                 "Context click of item " + item.id,
@@ -121,49 +120,19 @@ class ItemListFragment : Fragment() {
         onClickListener: View.OnClickListener,
         onContextClickListener: View.OnContextClickListener
     ) {
+        val imageLoader = Glide.with(this)
 
-        recyclerView.adapter = SimpleItemRecyclerViewAdapter(
-            PlaceholderContent.ITEMS,
-            onClickListener,
-            onContextClickListener
-        )
-    }
-
-    class SimpleItemRecyclerViewAdapter(
-        private val values: List<PlaceholderContent.PlaceholderItem>,
-        private val onClickListener: View.OnClickListener,
-        private val onContextClickListener: View.OnContextClickListener
-    ) :
-        RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>() {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-
-            val binding = ItemListContentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            return ViewHolder(binding)
-
+        val movieListAdapter = MovieListAdapter(
+            imageLoader
+        ) { item ->
+            val bundle = Bundle()
+            bundle.putString(
+                ItemDetailFragment.ARG_ITEM_ID,
+                item.id
+            )
         }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            val item = values[position]
-            holder.idView.text = item.id
-            holder.contentView.text = item.content
-
-            with(holder.itemView) {
-                tag = item
-                setOnClickListener(onClickListener)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    setOnContextClickListener(onContextClickListener)
-                }
-            }
-        }
-
-        override fun getItemCount() = values.size
-
-        inner class ViewHolder(binding: ItemListContentBinding) : RecyclerView.ViewHolder(binding.root) {
-            val idView: TextView = binding.idText
-            val contentView: TextView = binding.content
-        }
-
+        recyclerView.adapter = movieListAdapter
+        movieListAdapter.submitList(PlaceholderContent.ITEMS)
     }
 
     override fun onDestroyView() {
