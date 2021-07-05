@@ -1,8 +1,7 @@
-package com.andremion.imdb
+package com.andremion.imdb.ui.details
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.google.android.material.appbar.CollapsingToolbarLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

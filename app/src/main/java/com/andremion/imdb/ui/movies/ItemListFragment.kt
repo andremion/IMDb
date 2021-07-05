@@ -1,4 +1,4 @@
-package com.andremion.imdb
+package com.andremion.imdb.ui.movies
 
 import android.os.Build
 import android.os.Bundle
@@ -12,9 +12,11 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.andremion.imdb.R
 import com.andremion.imdb.placeholder.PlaceholderContent;
 import com.andremion.imdb.databinding.FragmentItemListBinding
 import com.andremion.imdb.databinding.ItemListContentBinding
+import com.andremion.imdb.ui.details.ItemDetailFragment
 
 /**
  * A Fragment representing a list of Pings. This fragment
