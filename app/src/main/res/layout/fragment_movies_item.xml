@@ -8,11 +8,12 @@
         android:id="@+id/image"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/ic_launcher_background"
+        android:background="?colorPrimary"
         android:importantForAccessibility="no"
         app:layout_constraintDimensionRatio="W,4:3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:scaleType="centerCrop"
         tools:src="@tools:sample/backgrounds/scenic" />
 
     <androidx.cardview.widget.CardView
