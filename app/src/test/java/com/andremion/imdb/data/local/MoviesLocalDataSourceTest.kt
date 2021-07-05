@@ -80,7 +80,6 @@ class MoviesLocalDataSourceTest {
 
 }
 
-
 private fun aListOfMovies(): List<MovieEntity> =
     listOf(
         MovieEntity(
