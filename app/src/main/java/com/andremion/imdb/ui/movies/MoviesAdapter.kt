@@ -12,7 +12,7 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 
-class MovieListAdapter(
+class MoviesAdapter(
     private val imageLoader: RequestManager,
     private val onItemClicked: (item: MovieModel) -> Unit
 ) : ListAdapter<MovieModel, MovieViewHolder>(DIFF_CALLBACK) {
