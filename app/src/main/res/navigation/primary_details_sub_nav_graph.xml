@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph_details"
-    app:startDestination="@id/fragment_item_detail">
+    app:startDestination="@id/movie_details_fragment">
     <fragment
-        android:id="@+id/fragment_item_detail"
-        android:name="com.andremion.imdb.ui.details.ItemDetailFragment"
-        tools:layout="@layout/fragment_item_detail">
+        android:id="@+id/movie_details_fragment"
+        android:name="com.andremion.imdb.ui.details.MovieDetailsFragment"
+        tools:layout="@layout/fragment_movie_details">
         <argument
             android:name="item_id"
             android:defaultValue=""

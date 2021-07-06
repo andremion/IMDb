@@ -2,7 +2,10 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="item_width">300dp</dimen>
-    <dimen name="app_bar_height">200dp</dimen>
+    <dimen name="appbar_height">272dp</dimen>
+    <dimen name="appbar_overlap">128dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="container_margin">8dp</dimen>
+    <dimen name="movie_image_poster_size">96dp</dimen>
+    <dimen name="movie_details_main_card_margin_top">32dp</dimen>
 </resources>

@@ -1,6 +1,6 @@
 package com.andremion.imdb.placeholder
 
-import com.andremion.imdb.ui.movies.model.MovieModel
+import com.andremion.imdb.ui.details.model.MovieDetailsModel
 import java.util.*
 
 /**
@@ -9,17 +9,17 @@ import java.util.*
  *
  * TODO: Replace all uses of this class before publishing your app.
  */
-object PlaceholderContent {
+object PlaceholderDetailsContent {
 
     /**
      * An array of sample (placeholder) items.
      */
-    val ITEMS: MutableList<MovieModel> = ArrayList()
+    val ITEMS: MutableList<MovieDetailsModel> = ArrayList()
 
     /**
      * A map of sample (placeholder) items, by ID.
      */
-    val ITEM_MAP: MutableMap<String, MovieModel> = HashMap()
+    val ITEM_MAP: MutableMap<String, MovieDetailsModel> = HashMap()
 
     private const val COUNT = 25
 
@@ -30,17 +30,22 @@ object PlaceholderContent {
         }
     }
 
-    private fun addItem(item: MovieModel) {
+    private fun addItem(item: MovieDetailsModel) {
         ITEMS.add(item)
         ITEM_MAP[item.id] = item
     }
 
-    private fun createPlaceholderItem(position: Int): MovieModel {
-        return MovieModel(
+    private fun createPlaceholderItem(position: Int): MovieDetailsModel {
+        return MovieDetailsModel(
             id = position.toString(),
             image = "https://m.media-amazon.com/images/M/MV5BNGM3YzdlOWYtNjViZS00MTE2LWE1MWUtZmE2ZTcxZjcyMmU3XkEyXkFqcGdeQXVyODEyMTI1MjA@._V1_.jpg",
-            title = makeDetails(position),
+            title = "Item: $position",
             year = (position + 2000).toString(),
+            rating = "7.5",
+            runtime = "1h 59m",
+            outline = makeDetails(position),
+            summary = makeDetails(position),
+            genres = makeGenres(position),
         )
     }
 
@@ -51,5 +56,13 @@ object PlaceholderContent {
             builder.append("\nMore details information here.")
         }
         return builder.toString()
+    }
+
+    private fun makeGenres(position: Int): List<String> {
+        val list = mutableListOf<String>()
+        for (i in 0 until position) {
+            list.add("genre")
+        }
+        return list
     }
 }

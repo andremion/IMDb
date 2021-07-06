@@ -9,6 +9,8 @@ import com.andremion.imdb.R
 import com.andremion.imdb.databinding.FragmentMoviesItemBinding
 import com.andremion.imdb.ui.movies.model.MovieModel
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
 
 class MovieListAdapter(
     private val imageLoader: RequestManager,
@@ -39,7 +41,9 @@ class MovieViewHolder(
     fun bind(item: MovieModel) {
         with(binding) {
             imageLoader.load(item.image)
-                .placeholder(R.drawable.ic_launcher_foreground)
+                .placeholder(R.drawable.ic_movie_image_placeholder)
+                .apply(RequestOptions.noTransformation())
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(image)
             title.text = item.title
             year.text = item.year

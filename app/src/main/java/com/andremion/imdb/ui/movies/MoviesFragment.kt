@@ -8,10 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.andremion.imdb.R
-import com.andremion.imdb.databinding.FragmentItemListBinding
+import com.andremion.imdb.databinding.FragmentMoviesBinding
 import com.andremion.imdb.placeholder.PlaceholderContent
-import com.andremion.imdb.ui.details.ItemDetailFragment
+import com.andremion.imdb.ui.details.MovieDetailsFragment
 import com.andremion.imdb.ui.movies.model.MovieModel
+import com.andremion.imdb.util.setupToolbarWithNavController
 import com.bumptech.glide.Glide
 
 /**
@@ -25,58 +26,51 @@ import com.bumptech.glide.Glide
 
 class MoviesFragment : Fragment() {
 
-    private var _binding: FragmentItemListBinding? = null
+    private var _binding: FragmentMoviesBinding? = null
 
     // This property is only valid between onCreateView and onDestroyView.
-    private val binding get() = _binding!!
+    private val binding: FragmentMoviesBinding get() = _binding!!
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentItemListBinding.inflate(inflater, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentMoviesBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val recyclerView: RecyclerView = binding.itemList
+        binding.toolbar.setupToolbarWithNavController()
+
+        val recyclerView: RecyclerView = binding.movieList
 
         // Leaving this not using view binding as it relies on if the view is visible
         // based on the current layout configuration (layout, layout-sw600dp)
-        val itemDetailFragmentContainer: View? = view.findViewById(R.id.item_detail_nav_container)
+        val movieDetailsContainer: View? = view.findViewById(R.id.movie_details_nav_host_container)
 
-        /** Click Listener to trigger navigation based on if you have
-         * a single pane layout or two pane layout
-         */
-        val onClickListener = { item: MovieModel ->
+        /** Trigger navigation based on if you have a single pane layout or two pane layout */
+        val onItemClicked = { item: MovieModel ->
             val bundle = Bundle().apply {
-                putString(ItemDetailFragment.ARG_ITEM_ID, item.id)
+                putString(MovieDetailsFragment.ARG_ITEM_ID, item.id)
             }
-            if (itemDetailFragmentContainer != null) {
-                itemDetailFragmentContainer.findNavController()
-                    .navigate(R.id.fragment_item_detail, bundle)
+            if (movieDetailsContainer != null) {
+                movieDetailsContainer.findNavController().navigate(R.id.movie_details_fragment, bundle)
             } else {
-                recyclerView.findNavController().navigate(R.id.show_item_detail, bundle)
+                recyclerView.findNavController().navigate(R.id.show_movie_detail, bundle)
             }
         }
 
-        setupRecyclerView(recyclerView, onClickListener)
-    }
-
-    private fun setupRecyclerView(
-        recyclerView: RecyclerView,
-        onItemClicked: (item: MovieModel) -> Unit
-    ) {
-        val imageLoader = Glide.with(this)
-        val movieListAdapter = MovieListAdapter(imageLoader, onItemClicked)
-        recyclerView.adapter = movieListAdapter
-        movieListAdapter.submitList(PlaceholderContent.ITEMS)
+        recyclerView.setupWith(onItemClicked)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun RecyclerView.setupWith(onItemClicked: (item: MovieModel) -> Unit) {
+        val imageLoader = Glide.with(this)
+        val movieListAdapter = MovieListAdapter(imageLoader, onItemClicked)
+        adapter = movieListAdapter
+        movieListAdapter.submitList(PlaceholderContent.ITEMS)
     }
 }
