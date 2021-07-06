@@ -1,12 +1,11 @@
 package com.andremion.imdb.ui.movies
 
 import androidx.core.view.isVisible
-import com.andremion.imdb.R
 import com.andremion.imdb.databinding.FragmentMoviesBinding
 import com.andremion.imdb.util.mvvm.BaseScreen
 import com.andremion.imdb.util.setupToolbarWithNavController
+import com.andremion.imdb.util.showError
 import com.bumptech.glide.RequestManager
-import com.google.android.material.snackbar.Snackbar
 import javax.inject.Inject
 
 class MoviesScreen @Inject constructor(
@@ -44,26 +43,17 @@ class MoviesScreen @Inject constructor(
                 progressView.isVisible = false
                 moviesAdapter.submitList(emptyList())
                 // TODO Empty UI
-                showError(RuntimeException("No movies"))
+                rootView.showError(RuntimeException("No movies"))
             }
             is MoviesViewState.Error -> {
                 progressView.isVisible = false
-                showError(state.error)
+                rootView.showError(state.error)
             }
         }
     }
 
     private fun setupRecyclerView() {
         recyclerView.adapter = moviesAdapter
-    }
-
-    private fun showError(error: Throwable) {
-        val text = if (error.message.isNullOrBlank()) {
-            rootView.context.getString(R.string.generic_error)
-        } else {
-            error.message!!
-        }
-        Snackbar.make(rootView, text, Snackbar.LENGTH_LONG).show()
     }
 }
 
