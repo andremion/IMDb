@@ -5,12 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.andremion.imdb.R
 import com.andremion.imdb.databinding.FragmentMoviesItemBinding
 import com.andremion.imdb.ui.movies.model.MovieModel
+import com.andremion.imdb.util.loadImage
 import com.bumptech.glide.RequestManager
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.RequestOptions
 
 class MoviesAdapter(
     private val imageLoader: RequestManager,
@@ -40,11 +38,7 @@ class MovieViewHolder(
 
     fun bind(item: MovieModel) {
         with(binding) {
-            imageLoader.load(item.image)
-                .placeholder(R.drawable.ic_movie_image_placeholder)
-                .apply(RequestOptions.noTransformation())
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(image)
+            imageLoader.loadImage(item.image, image)
             title.text = item.title
             year.text = item.year
         }
