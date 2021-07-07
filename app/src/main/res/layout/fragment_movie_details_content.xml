@@ -91,17 +91,6 @@
         app:layout_constraintTop_toBottomOf="@id/year"
         tools:text="@tools:sample/us_zipcodes" />
 
-    <TextView
-        android:id="@+id/text_revenue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/text_margin"
-        android:elevation="@dimen/cardview_default_elevation"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-        app:layout_constraintStart_toEndOf="@id/runtime"
-        app:layout_constraintTop_toTopOf="@id/runtime"
-        tools:text="@tools:sample/us_phones" />
-
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier"
         android:layout_width="wrap_content"

@@ -27,7 +27,7 @@ private fun Movie.mapToModel(): MovieDetailsModel =
     }
 
 private fun parseRating(rating: Float?): String =
-    rating?.let { "%.0f".format(it) }
+    rating?.let { "%.1f".format(it) }
         .orEmpty()
 
 private fun parseRuntime(runtime: Int): String {
