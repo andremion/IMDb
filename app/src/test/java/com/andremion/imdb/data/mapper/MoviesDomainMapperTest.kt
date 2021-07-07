@@ -1,5 +1,6 @@
 package com.andremion.imdb.data.mapper
 
+import com.andremion.imdb.data.local.entity.MovieDetailsEntity
 import com.andremion.imdb.data.local.entity.MovieEntity
 import com.andremion.imdb.domain.Movie
 import org.junit.Test
@@ -11,12 +12,23 @@ class MoviesDomainMapperTest {
         MoviesDomainMapper()
 
     @Test
-    fun map() {
+    fun `map movies`() {
         val entities = aListOfEntities()
 
         val actual = sut.map(entities)
 
         val expected = aListOfMovies()
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `map details`() {
+        val movie = aMovie()
+        val details = aMovieDetailsEntity()
+
+        val actual = sut.map(movie, details)
+
+        val expected = aDetailedMovie()
         assertEquals(expected, actual)
     }
 }
@@ -32,12 +44,38 @@ private fun aListOfEntities(): List<MovieEntity> =
     )
 
 private fun aListOfMovies(): List<Movie> =
-    listOf(
-        Movie(
-            id = "id",
-            image = "image",
-            title = "title",
-            year = 2021,
-            details = null
+    listOf(aMovie())
+
+private fun aMovie(): Movie =
+    Movie(
+        id = "id",
+        image = "image",
+        title = "title",
+        year = 2021,
+        details = null
+    )
+
+private fun aMovieDetailsEntity(): MovieDetailsEntity =
+    MovieDetailsEntity(
+        movieId = "movieId",
+        rating = 7.5F,
+        runtime = 90,
+        outline = "outline",
+        summary = "summary",
+        genres = listOf("genre"),
+    )
+
+private fun aDetailedMovie(): Movie =
+    Movie(
+        id = "id",
+        image = "image",
+        title = "title",
+        year = 2021,
+        details = Movie.Details(
+            rating = 7.5f,
+            runtime = 90,
+            outline = "outline",
+            summary = "summary",
+            genres = listOf("genre")
         )
     )

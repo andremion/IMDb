@@ -1,13 +1,16 @@
 package com.andremion.imdb.data
 
 import com.andremion.imdb.data.local.MoviesLocalDataSource
+import com.andremion.imdb.data.local.entity.MovieDetailsEntity
 import com.andremion.imdb.data.local.entity.MovieEntity
 import com.andremion.imdb.data.mapper.MoviesDomainMapper
 import com.andremion.imdb.data.mapper.MoviesLocalMapper
 import com.andremion.imdb.data.remote.MoviesRemoteDataSource
 import com.andremion.imdb.data.remote.dto.MovieDetailsDTO
+import com.andremion.imdb.data.remote.dto.MovieOverviewDTO
 import com.andremion.imdb.domain.Movie
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.test.runBlockingTest
@@ -83,12 +86,48 @@ class MoviesRepositoryTest {
         verify(mockLocalDataSource).insert(emptyList())
     }
 
+    @Test
+    fun `get movie details when local data source is empty`() = runBlockingTest {
+        val movie = aMovie()
+        whenever(mockLocalDataSource.getMovieDetailsById(movie.id)).thenReturn(null)
+        val details = givenAMovieDetailsEntity(movie.id)
+        val expected = aDetailedMovie()
+        whenever(mockDomainMapper.map(movie, details)).thenReturn(expected)
+
+        val actual = sut.getMovieDetails(movie)
+
+        assertEquals(expected, actual)
+        verify(mockLocalDataSource).insert(details)
+    }
+
+    @Test
+    fun `get movie details when local data source has the movie details`() = runBlockingTest {
+        val movie = aMovie()
+        val details = givenAMovieDetailsEntity(movie.id)
+        whenever(mockLocalDataSource.getMovieDetailsById(movie.id)).thenReturn(details)
+        val expected = aDetailedMovie()
+        whenever(mockDomainMapper.map(movie, details)).thenReturn(expected)
+
+        val actual = sut.getMovieDetails(movie)
+
+        assertEquals(expected, actual)
+        verify(mockLocalDataSource, never()).insert(details)
+    }
+
     private suspend fun givenAMovieEntity(movieId: String): MovieEntity {
         val movieDetails = aMovieDetailsDTO(movieId)
         whenever(mockRemoteDataSource.getDetails(movieId)).thenReturn(movieDetails)
         val movieEntity = aMovieEntity(movieId)
         whenever(mockLocalMapper.map(movieDetails)).thenReturn(movieEntity)
         return movieEntity
+    }
+
+    private suspend fun givenAMovieDetailsEntity(movieId: String): MovieDetailsEntity {
+        val movieOverview = aMovieOverviewDTO()
+        whenever(mockRemoteDataSource.getOverviewDetails(movieId)).thenReturn(movieOverview)
+        val movieDetailsEntity = aMovieDetailsEntity(movieId)
+        whenever(mockLocalMapper.map(movieId, movieOverview)).thenReturn(movieDetailsEntity)
+        return movieDetailsEntity
     }
 }
 
@@ -100,6 +139,16 @@ private fun aMovieEntity(movieId: String): MovieEntity =
         year = 2021,
     )
 
+private fun aMovieDetailsEntity(movieId: String): MovieDetailsEntity =
+    MovieDetailsEntity(
+        movieId = movieId,
+        rating = 7.5F,
+        runtime = 90,
+        outline = "outline",
+        summary = "summary",
+        genres = listOf("genre"),
+    )
+
 private fun aMovieDetailsDTO(movieId: String): MovieDetailsDTO =
     MovieDetailsDTO(
         id = movieId,
@@ -108,13 +157,38 @@ private fun aMovieDetailsDTO(movieId: String): MovieDetailsDTO =
         year = 2021,
     )
 
+private fun aMovieOverviewDTO(): MovieOverviewDTO =
+    MovieOverviewDTO(
+        ratings = MovieOverviewDTO.Ratings(rating = 7.5f),
+        title = MovieOverviewDTO.Title(runningTimeInMinutes = 90),
+        plotSummary = MovieOverviewDTO.Plot(text = "text"),
+        plotOutline = MovieOverviewDTO.Plot(text = "text"),
+        genres = listOf("genre"),
+    )
+
 private fun aListOfMovies(): List<Movie> =
-    listOf(
-        Movie(
-            id = "id",
-            image = "image",
-            title = "title",
-            year = 2021,
-            details = null
+    listOf(aMovie())
+
+private fun aMovie(): Movie =
+    Movie(
+        id = "id",
+        image = "image",
+        title = "title",
+        year = 2021,
+        details = null
+    )
+
+private fun aDetailedMovie(): Movie =
+    Movie(
+        id = "id",
+        image = "image",
+        title = "title",
+        year = 2021,
+        details = Movie.Details(
+            rating = 7.5f,
+            runtime = 90,
+            outline = "outline",
+            summary = "summary",
+            genres = listOf("genre")
         )
     )

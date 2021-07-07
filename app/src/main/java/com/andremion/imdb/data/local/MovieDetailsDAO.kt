@@ -9,7 +9,7 @@ import com.andremion.imdb.data.local.entity.MovieDetailsEntity
 interface MovieDetailsDAO {
 
     @Query("SELECT * FROM movie_details WHERE movieId = :movieId")
-    suspend fun getByMovieId(movieId: String): MovieDetailsEntity
+    suspend fun getByMovieId(movieId: String): MovieDetailsEntity?
 
     @Insert(entity = MovieDetailsEntity::class)
     suspend fun insert(movieDetails: MovieDetailsEntity)
