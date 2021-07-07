@@ -47,8 +47,6 @@ class MoviesFragment : Fragment() {
         screen.event
             .onEach(::onEvent)
             .launchIn(viewLifecycleOwner.lifecycleScope)
-
-        viewModel.init()
     }
 
     private fun onEvent(event: MoviesViewEvent) {

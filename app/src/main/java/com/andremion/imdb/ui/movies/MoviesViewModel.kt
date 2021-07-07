@@ -14,12 +14,14 @@ class MoviesViewModel @Inject constructor(
     private val modelMapper: MoviesModelMapper
 ) : BaseViewModel<MoviesViewState>(MoviesViewState.Idle) {
 
-    fun init() {
+    init {
+        init()
+    }
+
+    private fun init() {
         _state.value = MoviesViewState.Loading
         viewModelScope.launch {
             _state.value = try {
-//                delay(2000)
-//                MoviesViewState.Result(PlaceholderContent.ITEMS)
                 val movies = moviesRepository.getMostPopularMovies()
                 if (movies.isEmpty()) {
                     MoviesViewState.EmptyResult

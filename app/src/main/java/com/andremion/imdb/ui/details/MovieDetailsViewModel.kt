@@ -17,8 +17,6 @@ class MovieDetailsViewModel @Inject constructor(
         _state.value = MovieDetailsViewState.Loading
         viewModelScope.launch {
             _state.value = try {
-//                delay(2000)
-//                MovieDetailsViewState.Result(PlaceholderDetailsContent.ITEM_MAP.getValue(movie.id))
                 val movieDetails = moviesRepository.getMovieDetails(movieId)
                 val model = modelMapper.map(movieDetails)
                 MovieDetailsViewState.Result(model)
