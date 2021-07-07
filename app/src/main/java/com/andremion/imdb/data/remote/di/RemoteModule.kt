@@ -2,6 +2,7 @@ package com.andremion.imdb.data.remote.di
 
 import com.andremion.imdb.BuildConfig
 import com.andremion.imdb.data.remote.ImdbService
+import com.andremion.imdb.data.remote.auth.AuthInterceptor
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -12,7 +13,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
-private const val API_URL = "https://imdb8.p.rapidapi.com/"
+private const val API_URL = "https://${BuildConfig.API_HOST}"
 
 @Module
 object RemoteModule {
@@ -35,12 +36,16 @@ object RemoteModule {
     }
 
     @Provides
-    fun providesOkHttpClient(level: HttpLoggingInterceptor.Level): OkHttpClient {
+    fun providesOkHttpClient(
+        level: HttpLoggingInterceptor.Level,
+        authInterceptor: AuthInterceptor
+    ): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
             setLevel(level)
         }
         return OkHttpClient.Builder()
             .addInterceptor(logging)
+            .addInterceptor(authInterceptor)
             .build()
     }
 

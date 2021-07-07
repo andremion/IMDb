@@ -36,6 +36,13 @@ android {
     }
 }
 
+def API_HOST = System.getenv("API_HOST") ?: apiHost
+def API_KEY = System.getenv("API_KEY") ?: apiKey
+android.buildTypes.each { type ->
+    type.buildConfigField "String", "API_HOST", "\"$API_HOST\""
+    type.buildConfigField "String", "API_KEY", "\"$API_KEY\""
+}
+
 def room_version = "2.3.0"
 def dagger_version = "2.34"
 
