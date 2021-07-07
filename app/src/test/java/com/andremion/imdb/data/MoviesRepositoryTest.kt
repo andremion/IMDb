@@ -152,7 +152,7 @@ private fun aMovieDetailsEntity(movieId: String): MovieDetailsEntity =
 private fun aMovieDetailsDTO(movieId: String): MovieDetailsDTO =
     MovieDetailsDTO(
         id = movieId,
-        image = "image",
+        image = MovieDetailsDTO.Image(url = "image"),
         title = "title",
         year = 2021,
     )
@@ -161,8 +161,8 @@ private fun aMovieOverviewDTO(): MovieOverviewDTO =
     MovieOverviewDTO(
         ratings = MovieOverviewDTO.Ratings(rating = 7.5f),
         title = MovieOverviewDTO.Title(runningTimeInMinutes = 90),
-        plotSummary = MovieOverviewDTO.Plot(text = "text"),
-        plotOutline = MovieOverviewDTO.Plot(text = "text"),
+        plotSummary = MovieOverviewDTO.Plot(text = "summary"),
+        plotOutline = MovieOverviewDTO.Plot(text = "outline"),
         genres = listOf("genre"),
     )
 

@@ -21,7 +21,6 @@ class MoviesRemoteDataSourceTest {
     fun `get most popular movie ids`() = runBlockingTest {
         val expected = listOf("1", "2", "3")
         whenever(mockService.getMostPopularMovies()).thenReturn(expected)
-        expected.forEach { id -> whenever(mockMovieIdMapper.map(id)).thenReturn(id) }
 
         val actual = sut.getMostPopularMovieIds()
 
@@ -33,6 +32,7 @@ class MoviesRemoteDataSourceTest {
         val movieId = "movieId"
         val expected = aMovieDetails()
         whenever(mockService.getDetails(movieId)).thenReturn(expected)
+        whenever(mockMovieIdMapper.map(movieId)).thenReturn(movieId)
 
         val actual = sut.getDetails(movieId)
 
@@ -44,6 +44,7 @@ class MoviesRemoteDataSourceTest {
         val movieId = "movieId"
         val expected = aMovieOverview()
         whenever(mockService.getOverviewDetails(movieId)).thenReturn(expected)
+        whenever(mockMovieIdMapper.map(movieId)).thenReturn(movieId)
 
         val actual = sut.getOverviewDetails(movieId)
 
@@ -55,7 +56,7 @@ class MoviesRemoteDataSourceTest {
 private fun aMovieDetails(): MovieDetailsDTO =
     MovieDetailsDTO(
         id = "id",
-        image = "image",
+        image = MovieDetailsDTO.Image(url = "image"),
         title = "title",
         year = 2021,
     )

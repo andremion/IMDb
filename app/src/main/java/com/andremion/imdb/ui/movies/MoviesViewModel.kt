@@ -2,7 +2,6 @@ package com.andremion.imdb.ui.movies
 
 import androidx.lifecycle.viewModelScope
 import com.andremion.imdb.data.MoviesRepository
-import com.andremion.imdb.placeholder.PlaceholderContent
 import com.andremion.imdb.ui.movies.mapper.MoviesModelMapper
 import com.andremion.imdb.ui.movies.model.MovieModel
 import com.andremion.imdb.util.mvvm.BaseViewModel
@@ -19,15 +18,15 @@ class MoviesViewModel @Inject constructor(
         _state.value = MoviesViewState.Loading
         viewModelScope.launch {
             _state.value = try {
-                delay(2000)
-//                val movies = moviesRepository.getMostPopularMovies()
-//                if (movies.isEmpty()) {
-//                    MoviesViewState.EmptyResult
-//                } else {
-//                    val models = modelMapper.map(movies)
-//                    MoviesViewState.Result(models)
-                MoviesViewState.Result(PlaceholderContent.ITEMS)
-//                }
+//                delay(2000)
+//                MoviesViewState.Result(PlaceholderContent.ITEMS)
+                val movies = moviesRepository.getMostPopularMovies()
+                if (movies.isEmpty()) {
+                    MoviesViewState.EmptyResult
+                } else {
+                    val models = modelMapper.map(movies)
+                    MoviesViewState.Result(models)
+                }
             } catch (e: Throwable) {
                 MoviesViewState.Error(e)
             }

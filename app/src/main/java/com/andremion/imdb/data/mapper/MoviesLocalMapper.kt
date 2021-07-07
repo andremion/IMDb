@@ -18,7 +18,7 @@ class MoviesLocalMapper @Inject constructor() {
 private fun MovieDetailsDTO.mapToEntity(): MovieEntity =
     MovieEntity(
         id = id,
-        image = image,
+        image = image.url,
         title = title,
         year = year,
     )

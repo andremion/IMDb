@@ -3,6 +3,7 @@ package com.andremion.imdb.data.remote
 import com.andremion.imdb.data.remote.dto.MovieDetailsDTO
 import com.andremion.imdb.data.remote.dto.MovieOverviewDTO
 import com.andremion.imdb.data.remote.mapper.MovieIdMapper
+import com.andremion.imdb.util.transform
 import javax.inject.Inject
 
 class MoviesRemoteDataSource @Inject constructor(
@@ -12,11 +13,12 @@ class MoviesRemoteDataSource @Inject constructor(
 
     suspend fun getMostPopularMovieIds(): List<String> =
         service.getMostPopularMovies()
-            .map(movieIdMapper::map)
 
     suspend fun getDetails(movieId: String): MovieDetailsDTO =
-        service.getDetails(movieId)
+        movieIdMapper.map(movieId)
+            .transform { service.getDetails(it) }
 
     suspend fun getOverviewDetails(movieId: String): MovieOverviewDTO =
-        service.getOverviewDetails(movieId)
+        movieIdMapper.map(movieId)
+            .transform { service.getOverviewDetails(it) }
 }

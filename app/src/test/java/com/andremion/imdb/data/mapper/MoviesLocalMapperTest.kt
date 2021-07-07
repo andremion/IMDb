@@ -37,7 +37,7 @@ class MoviesLocalMapperTest {
 private fun aMovieDetailsDTO(): MovieDetailsDTO =
     MovieDetailsDTO(
         id = "id",
-        image = "image",
+        image = MovieDetailsDTO.Image(url = "image"),
         title = "title",
         year = 2021,
     )
