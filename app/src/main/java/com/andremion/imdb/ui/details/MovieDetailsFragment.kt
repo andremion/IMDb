@@ -10,6 +10,7 @@ import com.andremion.imdb.R
 import com.andremion.imdb.databinding.FragmentMovieDetailsBinding
 import com.andremion.imdb.placeholder.PlaceholderDetailsContent
 import com.andremion.imdb.ui.details.model.MovieDetailsModel
+import com.andremion.imdb.util.loadImage
 import com.andremion.imdb.util.setupToolbarWithNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
@@ -81,13 +82,4 @@ class MovieDetailsFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-}
-
-private fun RequestManager.loadImage(image: String, imageView: ImageView) {
-    load(image)
-        .placeholder(R.drawable.ic_movie_image_placeholder)
-        .apply(RequestOptions.noTransformation())
-        .transition(DrawableTransitionOptions.withCrossFade())
-        .into(imageView)
 }
