@@ -4,18 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.andremion.imdb.R
-import com.andremion.imdb.databinding.FragmentMovieDetailsBinding
-import com.andremion.imdb.placeholder.PlaceholderDetailsContent
-import com.andremion.imdb.ui.details.model.MovieDetailsModel
-import com.andremion.imdb.util.loadImage
-import com.andremion.imdb.util.setupToolbarWithNavController
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.RequestOptions
+import com.andremion.imdb.di.ViewModelFactory
+import dagger.android.support.AndroidSupportInjection
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
 /**
  * A fragment representing a single Item detail screen.
@@ -26,60 +23,37 @@ import com.bumptech.glide.request.RequestOptions
 class MovieDetailsFragment : Fragment() {
 
     companion object {
-        /**
-         * The fragment argument representing the item ID that this fragment
-         * represents.
-         */
-        const val ARG_ITEM_ID = "item_id"
+        const val ARG_MOVIE_ID = "movie_id"
     }
 
-    /**
-     * The placeholder content this fragment is presenting.
-     */
-    private var item: MovieDetailsModel? = null
+    @Inject
+    lateinit var screen: MovieDetailsScreen
 
-    private var _binding: FragmentMovieDetailsBinding? = null
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
 
-    // This property is only valid between onCreateView and onDestroyView.
-    private val binding: FragmentMovieDetailsBinding get() = _binding!!
+    private val viewModel: MovieDetailsViewModel by viewModels { viewModelFactory }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val movieId: String
+        get() = requireNotNull(arguments?.getString(ARG_MOVIE_ID)) { "Movie id argument is required" }
 
-        arguments?.let {
-            if (it.containsKey(ARG_ITEM_ID)) {
-                // Load the placeholder content specified by the fragment
-                // arguments. In a real-world scenario, use a Loader
-                // to load content from a content provider.
-                item = PlaceholderDetailsContent.ITEM_MAP[it.getString(ARG_ITEM_ID)]
-            }
-        }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentMovieDetailsBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+        inflater.inflate(R.layout.fragment_movie_details, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        with(binding) {
-            toolbar?.setupToolbarWithNavController()
-            item?.let {
-                content.title.text = it.title
-                content.year.text = it.year
-                content.rating.text = it.rating
-                content.runtime.text = it.runtime
-                content.summary.text = it.summary
-                val imageLoader = Glide.with(this@MovieDetailsFragment)
-                imageLoader.loadImage(it.image, imageLarge)
-                imageLoader.loadImage(it.image, content.imagePoster)
-            }
-        }
+        AndroidSupportInjection.inject(this)
+
+        viewModel.state
+            .onEach(screen::render)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
+        screen.event
+            .onEach(::onEvent)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
+
+        viewModel.init(movieId)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun onEvent(event: MovieDetailsViewEvent) {
+        // TODO: Implement when there is event in this UI
     }
 }

@@ -10,20 +10,20 @@ class MoviesDomainMapper @Inject constructor() {
     fun map(entities: List<MovieEntity>): List<Movie> =
         entities.mapToDomain()
 
-    fun map(domain: Movie, entity: MovieDetailsEntity): Movie =
-        domain.copy(details = entity.mapToDomain())
+    fun map(movie: MovieEntity, details: MovieDetailsEntity): Movie =
+        movie.mapToDomain(details = details.mapToDomain())
 }
 
 private fun List<MovieEntity>.mapToDomain(): List<Movie> =
     map(MovieEntity::mapToDomain)
 
-private fun MovieEntity.mapToDomain(): Movie =
+private fun MovieEntity.mapToDomain(details: Movie.Details? = null): Movie =
     Movie(
         id = id,
         image = image,
         title = title,
         year = year,
-        details = null
+        details = details
     )
 
 private fun MovieDetailsEntity.mapToDomain(): Movie.Details =

@@ -54,6 +54,4 @@ class MovieDetailsScreen @Inject constructor(
     }
 }
 
-sealed class MovieDetailsViewEvent {
-    data class MovieClicked(val movieId: String) : MovieDetailsViewEvent()
-}
+sealed class MovieDetailsViewEvent

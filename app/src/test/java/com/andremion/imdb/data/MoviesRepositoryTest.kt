@@ -88,27 +88,41 @@ class MoviesRepositoryTest {
 
     @Test
     fun `get movie details when local data source is empty`() = runBlockingTest {
-        val movie = aMovie()
-        whenever(mockLocalDataSource.getMovieDetailsById(movie.id)).thenReturn(null)
+        val movie = givenAMovieEntity("1")
         val details = givenAMovieDetailsEntity(movie.id)
         val expected = aDetailedMovie()
         whenever(mockDomainMapper.map(movie, details)).thenReturn(expected)
 
-        val actual = sut.getMovieDetails(movie)
+        val actual = sut.getMovieDetails("1")
 
         assertEquals(expected, actual)
         verify(mockLocalDataSource).insert(details)
     }
 
     @Test
-    fun `get movie details when local data source has the movie details`() = runBlockingTest {
-        val movie = aMovie()
+    fun `get movie details when local data source has only movie, not the details`() = runBlockingTest {
+        val movie = aMovieEntity("1")
+        whenever(mockLocalDataSource.getMoviesById(movie.id)).thenReturn(movie)
         val details = givenAMovieDetailsEntity(movie.id)
+        val expected = aDetailedMovie()
+        whenever(mockDomainMapper.map(movie, details)).thenReturn(expected)
+
+        val actual = sut.getMovieDetails("1")
+
+        assertEquals(expected, actual)
+        verify(mockLocalDataSource).insert(details)
+    }
+
+    @Test
+    fun `get movie details when local data source has both movie and details`() = runBlockingTest {
+        val movie = aMovieEntity("1")
+        whenever(mockLocalDataSource.getMoviesById(movie.id)).thenReturn(movie)
+        val details = aMovieDetailsEntity(movie.id)
         whenever(mockLocalDataSource.getMovieDetailsById(movie.id)).thenReturn(details)
         val expected = aDetailedMovie()
         whenever(mockDomainMapper.map(movie, details)).thenReturn(expected)
 
-        val actual = sut.getMovieDetails(movie)
+        val actual = sut.getMovieDetails("1")
 
         assertEquals(expected, actual)
         verify(mockLocalDataSource, never()).insert(details)

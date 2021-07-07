@@ -1,5 +1,8 @@
 package com.andremion.imdb.domain
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Movie(
     val id: String,
     val image: String,
@@ -8,6 +11,7 @@ data class Movie(
     val details: Details?
 ) {
 
+    @Serializable
     data class Details(
         val rating: Float?,
         val runtime: Int,

@@ -11,6 +11,9 @@ interface MoviesDAO {
     @Query("SELECT * FROM movies WHERE id in (:ids)")
     suspend fun getByIds(ids: List<String>): List<MovieEntity>
 
+    @Query("SELECT * FROM movies WHERE id = :id")
+    suspend fun getById(id: String): MovieEntity?
+
     @Insert(entity = MovieEntity::class)
     suspend fun insert(vararg movie: MovieEntity)
 

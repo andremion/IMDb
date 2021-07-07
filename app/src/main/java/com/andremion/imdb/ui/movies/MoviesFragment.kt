@@ -54,10 +54,10 @@ class MoviesFragment : Fragment() {
     private fun onEvent(event: MoviesViewEvent) {
         when (event) {
             is MoviesViewEvent.MovieClicked -> {
-                /** Trigger navigation based on if you have a single pane layout or two pane layout */
                 val bundle = Bundle().apply {
-                    putString(MovieDetailsFragment.ARG_ITEM_ID, event.movieId)
+                    putString(MovieDetailsFragment.ARG_MOVIE_ID, event.movieId)
                 }
+                // Trigger navigation based on if you have a single pane layout or two pane layout.
                 // Leaving this not using view binding as it relies on if the view is visible
                 // based on the current layout configuration (layout, layout-sw600dp)
                 val movieDetailsContainer: View? = view?.findViewById(R.id.movie_details_nav_host_container)

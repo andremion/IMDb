@@ -12,12 +12,19 @@ class MoviesLocalDataSource @Inject constructor(
     suspend fun getMoviesByIds(ids: List<String>): List<MovieEntity> =
         moviesDAO.getByIds(ids)
 
+    suspend fun getMoviesById(id: String): MovieEntity? =
+        moviesDAO.getById(id)
+
     suspend fun deleteMovieById(id: String) {
         moviesDAO.deleteById(id)
     }
 
     suspend fun insert(movies: List<MovieEntity>) {
         moviesDAO.insert(*movies.toTypedArray())
+    }
+
+    suspend fun insert(movie: MovieEntity) {
+        moviesDAO.insert(movie)
     }
 
     suspend fun getMovieDetailsById(id: String): MovieDetailsEntity? =

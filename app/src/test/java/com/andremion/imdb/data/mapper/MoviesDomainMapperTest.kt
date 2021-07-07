@@ -23,7 +23,7 @@ class MoviesDomainMapperTest {
 
     @Test
     fun `map details`() {
-        val movie = aMovie()
+        val movie = aMovieEntity()
         val details = aMovieDetailsEntity()
 
         val actual = sut.map(movie, details)
@@ -53,6 +53,14 @@ private fun aMovie(): Movie =
         title = "title",
         year = 2021,
         details = null
+    )
+
+private fun aMovieEntity(): MovieEntity =
+    MovieEntity(
+        id = "id",
+        image = "image",
+        title = "title",
+        year = 2021,
     )
 
 private fun aMovieDetailsEntity(): MovieDetailsEntity =
