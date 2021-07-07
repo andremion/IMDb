@@ -7,24 +7,21 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import com.andremion.imdb.R
 import com.andremion.imdb.di.ViewModelFactory
+import com.andremion.imdb.ui.movies.MoviesFragment
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 /**
- * A fragment representing a single Item detail screen.
+ * A fragment representing a single Movie detail screen.
  * This fragment is either contained in a [MoviesFragment]
- * in two-pane mode (on larger screen devices) or self-contained
- * on handsets.
+ * in two-pane mode (on larger screen devices) or self-contained on handsets.
  */
 class MovieDetailsFragment : Fragment() {
-
-    companion object {
-        const val ARG_MOVIE_ID = "movie_id"
-    }
 
     @Inject
     lateinit var screen: MovieDetailsScreen
@@ -33,9 +30,7 @@ class MovieDetailsFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModel: MovieDetailsViewModel by viewModels { viewModelFactory }
-
-    private val movieId: String
-        get() = requireNotNull(arguments?.getString(ARG_MOVIE_ID)) { "Movie id argument is required" }
+    private val args: MovieDetailsFragmentArgs by navArgs()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
         inflater.inflate(R.layout.fragment_movie_details, container, false)
@@ -50,7 +45,7 @@ class MovieDetailsFragment : Fragment() {
             .onEach(::onEvent)
             .launchIn(viewLifecycleOwner.lifecycleScope)
 
-        viewModel.init(movieId)
+        viewModel.init(args.movieId)
     }
 
     private fun onEvent(event: MovieDetailsViewEvent) {
