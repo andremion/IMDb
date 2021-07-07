@@ -2,6 +2,7 @@ package com.andremion.imdb.data.remote
 
 import com.andremion.imdb.data.remote.dto.MovieDetailsDTO
 import com.andremion.imdb.data.remote.dto.MovieOverviewDTO
+import com.andremion.imdb.data.remote.mapper.MovieIdMapper
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.test.runBlockingTest
@@ -11,14 +12,16 @@ import kotlin.test.assertEquals
 class MoviesRemoteDataSourceTest {
 
     private val mockService: ImdbService = mock()
+    private val mockMovieIdMapper: MovieIdMapper = mock()
 
     private val sut: MoviesRemoteDataSource =
-        MoviesRemoteDataSource(mockService)
+        MoviesRemoteDataSource(mockService, mockMovieIdMapper)
 
     @Test
     fun `get most popular movie ids`() = runBlockingTest {
         val expected = listOf("1", "2", "3")
         whenever(mockService.getMostPopularMovies()).thenReturn(expected)
+        expected.forEach { id -> whenever(mockMovieIdMapper.map(id)).thenReturn(id) }
 
         val actual = sut.getMostPopularMovieIds()
 
