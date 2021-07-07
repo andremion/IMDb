@@ -17,12 +17,37 @@ class MoviesRepository @Inject constructor(
 ) {
 
     suspend fun getMostPopularMovies(): List<Movie> {
-        val ids = remoteDataSource.getMostPopularMovieIds()
-        val entitiesMap = localDataSource.getMoviesByIds(ids).associateBy(MovieEntity::id)
-        val entities = ids.map { id ->
-            entitiesMap[id] ?: remoteDataSource.getDetails(id).transform(localMapper::map)
-        }
-        localDataSource.insert(entities)
+        val movieIds = remoteDataSource.getMostPopularMovieIds()
+        val cacheMap = getCachedMovieMap(movieIds)
+        val entities = syncCache(movieIds, cacheMap)
         return entities.transform(domainMapper::map)
+    }
+
+//    suspend fun getMovieDetails(movie: Movie): Movie {
+//        val cachedDetails = localDataSource.getMovieDetailsById(movie.id)
+//        val details = if (cachedDetails == null) {
+//            val detailsEntity = remoteDataSource.getOverviewDetails(movie.id)
+//                .let { localMapper.map(movie.id, it) }
+//            localDataSource.insert(detailsEntity)
+//            domainMapper.map(detailsEntity)
+//        } else {
+//            domainMapper.map(cachedDetails)
+//        }
+//        return movie.copy(details = details)
+//    }
+
+    private suspend fun getCachedMovieMap(movieIds: List<String>): Map<String, MovieEntity> =
+        localDataSource.getMoviesByIds(movieIds).associateBy(MovieEntity::id)
+
+    private suspend fun getRefreshedMovie(movieId: String): MovieEntity =
+        remoteDataSource.getDetails(movieId).transform(localMapper::map)
+
+    private suspend fun syncCache(movieIds: List<String>, cacheMap: Map<String, MovieEntity>): List<MovieEntity> {
+        val newEntities = mutableListOf<MovieEntity>()
+        val result = movieIds.map { movieId ->
+            cacheMap[movieId] ?: getRefreshedMovie(movieId).also { newEntities += it }
+        }
+        localDataSource.insert(newEntities)
+        return result
     }
 }
