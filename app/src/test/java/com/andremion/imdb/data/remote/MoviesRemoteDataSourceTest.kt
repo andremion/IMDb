@@ -40,13 +40,13 @@ class MoviesRemoteDataSourceTest {
     }
 
     @Test
-    fun `get overview details`() = runBlockingTest {
+    fun `get overview`() = runBlockingTest {
         val movieId = "movieId"
         val expected = aMovieOverview()
         whenever(mockService.getOverviewDetails(movieId)).thenReturn(expected)
         whenever(mockMovieIdMapper.map(movieId)).thenReturn(movieId)
 
-        val actual = sut.getOverviewDetails(movieId)
+        val actual = sut.getOverview(movieId)
 
         assertEquals(expected, actual)
     }

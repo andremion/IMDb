@@ -18,7 +18,7 @@ class MoviesRemoteDataSource @Inject constructor(
         movieIdMapper.map(movieId)
             .transform { service.getDetails(it) }
 
-    suspend fun getOverviewDetails(movieId: String): MovieOverviewDTO =
+    suspend fun getOverview(movieId: String): MovieOverviewDTO =
         movieIdMapper.map(movieId)
             .transform { service.getOverviewDetails(it) }
 }
