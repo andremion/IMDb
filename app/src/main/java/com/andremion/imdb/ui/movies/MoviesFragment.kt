@@ -51,6 +51,7 @@ class MoviesFragment : Fragment() {
 
     private fun onEvent(event: MoviesViewEvent) {
         when (event) {
+            is MoviesViewEvent.MovieBound -> viewModel.onMovieBound(event.movie)
             is MoviesViewEvent.MovieClicked -> {
                 // Trigger navigation based on if you have a single pane layout or two pane layout.
                 // Leaving this not using view binding as it relies on if the view is visible

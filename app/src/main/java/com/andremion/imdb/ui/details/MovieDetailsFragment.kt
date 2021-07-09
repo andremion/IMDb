@@ -41,14 +41,7 @@ class MovieDetailsFragment : Fragment() {
         viewModel.state
             .onEach(screen::render)
             .launchIn(viewLifecycleOwner.lifecycleScope)
-        screen.event
-            .onEach(::onEvent)
-            .launchIn(viewLifecycleOwner.lifecycleScope)
 
         viewModel.init(args.movieId)
-    }
-
-    private fun onEvent(event: MovieDetailsViewEvent) {
-        // TODO: Implement when there is event in this UI
     }
 }

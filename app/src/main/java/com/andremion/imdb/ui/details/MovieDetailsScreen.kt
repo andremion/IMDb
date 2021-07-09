@@ -45,8 +45,9 @@ class MovieDetailsScreen @Inject constructor(
     private fun onResult(state: MovieDetailsViewState.Result) {
         titleView.text = state.movieDetails.title
         yearView.text = state.movieDetails.year
+        ratingView.isVisible = state.movieDetails.rating.isNotEmpty()
         ratingView.text = state.movieDetails.rating
-        runtimeView.isVisible = state.movieDetails.rating?.isNotEmpty() ?: false
+        runtimeView.isVisible = state.movieDetails.runtime.isNotEmpty()
         runtimeView.text = state.movieDetails.runtime
         summaryView.text = state.movieDetails.summary
         imageLoader.loadImage(state.movieDetails.image, imageLargeView)

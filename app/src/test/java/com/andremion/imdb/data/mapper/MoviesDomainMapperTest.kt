@@ -12,60 +12,50 @@ class MoviesDomainMapperTest {
         MoviesDomainMapper()
 
     @Test
-    fun `map movies`() {
-        val entities = aListOfEntities()
+    fun `map movie id`() {
+        val movieId = "1"
 
-        val actual = sut.map(entities)
+        val actual = sut.map(movieId)
 
-        val expected = aListOfMovies()
+        val expected = aMovie(movieId)
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `map movie`() {
+        val movieId = "1"
+        val movie = aMovieEntity(movieId)
+
+        val actual = sut.map(movie)
+
+        val expected = movieDetails(movieId)
         assertEquals(expected, actual)
     }
 
     @Test
     fun `map details`() {
-        val movie = aMovieEntity()
-        val details = aMovieDetailsEntity()
+        val movieId = "1"
+        val movie = aMovieEntity(movieId)
+        val details = aMovieDetailsEntity(movieId)
 
         val actual = sut.map(movie, details)
 
-        val expected = aDetailedMovie()
+        val expected = aMovieOverview(movieId)
         assertEquals(expected, actual)
     }
 }
 
-private fun aListOfEntities(): List<MovieEntity> =
-    listOf(
-        MovieEntity(
-            id = "id",
-            image = "image",
-            title = "title",
-            year = 2021,
-        )
-    )
-
-private fun aListOfMovies(): List<Movie> =
-    listOf(aMovie())
-
-private fun aMovie(): Movie =
-    Movie(
-        id = "id",
-        image = "image",
-        title = "title",
-        year = 2021,
-        details = null
-    )
-
-private fun aMovieEntity(): MovieEntity =
+private fun aMovieEntity(id: String): MovieEntity =
     MovieEntity(
-        id = "id",
+        id = id,
         image = "image",
         title = "title",
         year = 2021,
     )
 
-private fun aMovieDetailsEntity(): MovieDetailsEntity =
+private fun aMovieDetailsEntity(id: String): MovieDetailsEntity =
     MovieDetailsEntity(
-        movieId = "movieId",
+        movieId = id,
         rating = 7.5F,
         runtime = 90,
         outline = "outline",
@@ -73,17 +63,36 @@ private fun aMovieDetailsEntity(): MovieDetailsEntity =
         genres = listOf("genre"),
     )
 
-private fun aDetailedMovie(): Movie =
+private fun aMovie(id: String): Movie =
     Movie(
-        id = "id",
-        image = "image",
-        title = "title",
-        year = 2021,
+        id = id,
+        details = null
+    )
+
+private fun movieDetails(id: String): Movie =
+    Movie(
+        id = id,
         details = Movie.Details(
-            rating = 7.5f,
-            runtime = 90,
-            outline = "outline",
-            summary = "summary",
-            genres = listOf("genre")
+            image = "image",
+            title = "title",
+            year = 2021,
+            overview = null
+        )
+    )
+
+private fun aMovieOverview(id: String): Movie =
+    Movie(
+        id = id,
+        details = Movie.Details(
+            image = "image",
+            title = "title",
+            year = 2021,
+            overview = Movie.Overview(
+                rating = 7.5f,
+                runtime = 90,
+                outline = "outline",
+                summary = "summary",
+                genres = listOf("genre")
+            )
         )
     )

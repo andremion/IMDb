@@ -13,25 +13,27 @@ class MovieDetailsModelMapper @Inject constructor() {
 
 private fun Movie.mapToModel(): MovieDetailsModel =
     requireNotNull(details).transform { details ->
-        MovieDetailsModel(
-            id = id,
-            image = image,
-            title = title,
-            year = year.toString(),
-            rating = parseRating(details.rating),
-            runtime = parseRuntime(details.runtime),
-            outline = details.outline,
-            summary = details.summary,
-            genres = details.genres,
-        )
+        requireNotNull(details.overview).transform { overview ->
+            MovieDetailsModel(
+                id = id,
+                image = details.image,
+                title = details.title,
+                year = details.year.toString(),
+                rating = parseRating(overview.rating),
+                runtime = parseRuntime(overview.runtime),
+                summary = overview.summary ?: overview.outline,
+                genres = overview.genres,
+            )
+        }
     }
 
 private fun parseRating(rating: Float?): String =
     rating?.let { "%.1f".format(it) }
         .orEmpty()
 
-private fun parseRuntime(runtime: Int): String {
-    val hours = runtime / 60
-    val minutes = runtime % 60
-    return "%dh %02dm".format(hours, minutes)
-}
+private fun parseRuntime(runtime: Int?): String =
+    runtime?.let { it ->
+        val hours = it / 60
+        val minutes = it % 60
+        return "%dh %02dm".format(hours, minutes)
+    }.orEmpty()

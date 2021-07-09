@@ -58,4 +58,14 @@
         app:layout_constraintTop_toTopOf="@id/cardview"
         tools:text="@tools:sample/us_zipcodes" />
 
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/cardview_default_elevation"
+        app:layout_constraintBottom_toBottomOf="@id/cardview"
+        app:layout_constraintEnd_toEndOf="@id/cardview"
+        app:layout_constraintStart_toStartOf="@id/cardview"
+        app:layout_constraintTop_toTopOf="@id/cardview" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,19 +6,19 @@ import kotlinx.serialization.Serializable
 data class MovieOverviewDTO(
     val ratings: Ratings,
     val title: Title,
-    val plotSummary: Plot?,
+    val plotSummary: Plot? = null,
     val plotOutline: Plot,
     val genres: List<String>,
 ) {
 
     @Serializable
     data class Ratings(
-        val rating: Float?,
+        val rating: Float? = null,
     )
 
     @Serializable
     data class Title(
-        val runningTimeInMinutes: Int,
+        val runningTimeInMinutes: Int? = null,
     )
 
     @Serializable

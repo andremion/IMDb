@@ -17,7 +17,7 @@ class MovieDetailsViewModel @Inject constructor(
         _state.value = MovieDetailsViewState.Loading
         viewModelScope.launch {
             _state.value = try {
-                val movieDetails = moviesRepository.getMovieDetails(movieId)
+                val movieDetails = moviesRepository.getMovieOverview(movieId)
                 val model = modelMapper.map(movieDetails)
                 MovieDetailsViewState.Result(model)
             } catch (e: Throwable) {

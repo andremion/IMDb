@@ -5,6 +5,8 @@ import com.andremion.imdb.data.local.entity.MovieEntity
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -24,9 +26,9 @@ class MoviesLocalDataSourceTest {
     fun `get movies by ids`() = runBlockingTest {
         val ids = listOf("id")
         val expected = aListOfMovies()
-        whenever(mockMoviesDao.getByIds(ids)).thenReturn(expected)
+        whenever(mockMoviesDao.getByIds(ids)).thenReturn(flowOf(expected))
 
-        val actual = sut.getMoviesByIds(ids)
+        val actual = sut.getMoviesByIds(ids).single()
 
         assertEquals(expected, actual)
     }
@@ -41,12 +43,12 @@ class MoviesLocalDataSourceTest {
     }
 
     @Test
-    fun `insert movies`() = runBlockingTest {
-        val movies = aListOfMovies()
+    fun `insert movie`() = runBlockingTest {
+        val movie = aMovie()
 
-        sut.insert(movies)
+        sut.insert(movie)
 
-        verify(mockMoviesDao).insert(*movies.toTypedArray())
+        verify(mockMoviesDao).insert(movie)
     }
 
     @Test
@@ -81,13 +83,14 @@ class MoviesLocalDataSourceTest {
 }
 
 private fun aListOfMovies(): List<MovieEntity> =
-    listOf(
-        MovieEntity(
-            id = "id",
-            image = "image",
-            title = "title",
-            year = 2021,
-        )
+    listOf(aMovie())
+
+private fun aMovie(): MovieEntity =
+    MovieEntity(
+        id = "id",
+        image = "image",
+        title = "title",
+        year = 2021,
     )
 
 private fun aMovieDetails(): MovieDetailsEntity =

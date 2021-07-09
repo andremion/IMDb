@@ -2,6 +2,7 @@ package com.andremion.imdb.ui.movies
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -12,35 +13,41 @@ import com.bumptech.glide.RequestManager
 
 class MoviesAdapter(
     private val imageLoader: RequestManager,
-    private val onItemClicked: (item: MovieModel) -> Unit
+    private val onItemBind: (movie: MovieModel) -> Unit,
+    private val onItemClick: (movie: MovieModel) -> Unit
 ) : ListAdapter<MovieModel, MovieViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val binding = FragmentMoviesItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MovieViewHolder(imageLoader, binding) { position ->
-            onItemClicked(getItem(position))
+            onItemClick(getItem(position))
         }
     }
 
-    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) =
-        holder.bind(getItem(position))
+    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
+        val movie = getItem(position)
+        holder.bind(movie)
+            .also { onItemBind(movie) }
+    }
 }
 
 class MovieViewHolder(
     private val imageLoader: RequestManager,
     private val binding: FragmentMoviesItemBinding,
-    onItemClicked: (position: Int) -> Unit
+    onItemClick: (position: Int) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
     init {
-        itemView.setOnClickListener { onItemClicked(bindingAdapterPosition) }
+        itemView.setOnClickListener { onItemClick(bindingAdapterPosition) }
     }
 
-    fun bind(item: MovieModel) {
+    fun bind(movie: MovieModel) {
         with(binding) {
-            imageLoader.loadImage(item.image, image)
-            title.text = item.title
-            year.text = item.year
+            root.isEnabled = movie.isEnabled
+            progress.isVisible = movie.isLoading
+            imageLoader.loadImage(movie.image, image)
+            title.text = movie.title
+            year.text = movie.year
         }
     }
 }

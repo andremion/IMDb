@@ -13,6 +13,8 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -35,94 +37,115 @@ class MoviesRepositoryTest {
     @Test
     fun `get most popular movies when local data source is empty`() = runBlockingTest {
         val movieIds = listOf("1", "2", "3")
+        val movie1 = aMovie("1")
+        val movie2 = aMovie("2")
+        val movie3 = aMovie("3")
         whenever(mockRemoteDataSource.getMostPopularMovieIds()).thenReturn(movieIds)
-        whenever(mockLocalDataSource.getMoviesByIds(movieIds)).thenReturn(emptyList())
-        val entity1 = givenAMovieEntity("1")
-        val entity2 = givenAMovieEntity("2")
-        val entity3 = givenAMovieEntity("3")
-        val entities = listOf(entity1, entity2, entity3)
-        val expected = aListOfMovies()
-        whenever(mockDomainMapper.map(entities)).thenReturn(expected)
+        whenever(mockLocalDataSource.getMoviesByIds(movieIds)).thenReturn(flowOf(emptyList()))
+        whenever(mockDomainMapper.map("1")).thenReturn(movie1)
+        whenever(mockDomainMapper.map("2")).thenReturn(movie2)
+        whenever(mockDomainMapper.map("3")).thenReturn(movie3)
 
-        val actual = sut.getMostPopularMovies()
+        val actual = sut.getMostPopularMovies().single()
 
+        val expected = listOf(movie1, movie2, movie3)
         assertEquals(expected, actual)
-        verify(mockLocalDataSource).insert(entities)
     }
 
     @Test
     fun `get most popular movies when local data source has some movies`() = runBlockingTest {
         val movieIds = listOf("1", "2", "3")
-        whenever(mockRemoteDataSource.getMostPopularMovieIds()).thenReturn(movieIds)
         val entity1 = aMovieEntity("1")
         val entity2 = aMovieEntity("2")
-        whenever(mockLocalDataSource.getMoviesByIds(movieIds)).thenReturn(listOf(entity1, entity2))
-        val entity3 = givenAMovieEntity("3")
-        val entities = listOf(entity1, entity2, entity3)
-        val expected = aListOfMovies()
-        whenever(mockDomainMapper.map(entities)).thenReturn(expected)
+        val movie1 = aMovie("1")
+        val movie2 = aMovie("2")
+        val movie3 = aMovie("3")
+        whenever(mockRemoteDataSource.getMostPopularMovieIds()).thenReturn(movieIds)
+        whenever(mockLocalDataSource.getMoviesByIds(movieIds)).thenReturn(flowOf(listOf(entity1, entity2)))
+        whenever(mockDomainMapper.map(entity1)).thenReturn(movie1)
+        whenever(mockDomainMapper.map(entity2)).thenReturn(movie2)
+        whenever(mockDomainMapper.map("3")).thenReturn(movie3)
 
-        val actual = sut.getMostPopularMovies()
+        val actual = sut.getMostPopularMovies().single()
 
+        val expected = listOf(movie1, movie2, movie3)
         assertEquals(expected, actual)
-        verify(mockLocalDataSource).insert(listOf(entity3))
     }
 
     @Test
     fun `get most popular movies when local data source has all the movies`() = runBlockingTest {
         val movieIds = listOf("1", "2", "3")
-        whenever(mockRemoteDataSource.getMostPopularMovieIds()).thenReturn(movieIds)
         val entity1 = aMovieEntity("1")
         val entity2 = aMovieEntity("2")
         val entity3 = aMovieEntity("3")
-        val entities = listOf(entity1, entity2, entity3)
-        whenever(mockLocalDataSource.getMoviesByIds(movieIds)).thenReturn(entities)
-        val expected = aListOfMovies()
-        whenever(mockDomainMapper.map(entities)).thenReturn(expected)
+        val movie1 = aMovie("1")
+        val movie2 = aMovie("2")
+        val movie3 = aMovie("3")
+        whenever(mockRemoteDataSource.getMostPopularMovieIds()).thenReturn(movieIds)
+        whenever(mockLocalDataSource.getMoviesByIds(movieIds)).thenReturn(flowOf(listOf(entity1, entity2, entity3)))
+        whenever(mockDomainMapper.map(entity1)).thenReturn(movie1)
+        whenever(mockDomainMapper.map(entity2)).thenReturn(movie2)
+        whenever(mockDomainMapper.map(entity3)).thenReturn(movie3)
 
-        val actual = sut.getMostPopularMovies()
+        val actual = sut.getMostPopularMovies().single()
 
+        val expected = listOf(movie1, movie2, movie3)
         assertEquals(expected, actual)
-        verify(mockLocalDataSource).insert(emptyList())
     }
 
     @Test
-    fun `get movie details when local data source is empty`() = runBlockingTest {
-        val movie = givenAMovieEntity("1")
+    fun `fetch movie details`() = runBlockingTest {
+        val movieId = "1"
+        val movieDetailsDTO = aMovieDetailsDTO(movieId)
+        whenever(mockRemoteDataSource.getDetails(movieId)).thenReturn(movieDetailsDTO)
+        val movieEntity = aMovieEntity(movieId)
+        whenever(mockLocalMapper.map(movieDetailsDTO)).thenReturn(movieEntity)
+
+        sut.fetchMovieDetails(movieId)
+
+        verify(mockLocalDataSource).insert(movieEntity)
+    }
+
+    @Test
+    fun `get movie overview when local data source is empty`() = runBlockingTest {
+        val movieId = "1"
+        val movie = givenAMovieEntity(movieId)
         val details = givenAMovieDetailsEntity(movie.id)
-        val expected = aDetailedMovie()
+        val expected = aMovieOverview(movieId)
         whenever(mockDomainMapper.map(movie, details)).thenReturn(expected)
 
-        val actual = sut.getMovieDetails("1")
+        val actual = sut.getMovieOverview(movieId)
 
         assertEquals(expected, actual)
         verify(mockLocalDataSource).insert(details)
     }
 
     @Test
-    fun `get movie details when local data source has only movie, not the details`() = runBlockingTest {
-        val movie = aMovieEntity("1")
-        whenever(mockLocalDataSource.getMoviesById(movie.id)).thenReturn(movie)
+    fun `get movie overview when local data source has only movie, not the details`() = runBlockingTest {
+        val movieId = "1"
+        val movie = aMovieEntity(movieId)
+        whenever(mockLocalDataSource.getMovieById(movie.id)).thenReturn(movie)
         val details = givenAMovieDetailsEntity(movie.id)
-        val expected = aDetailedMovie()
+        val expected = aMovieOverview(movieId)
         whenever(mockDomainMapper.map(movie, details)).thenReturn(expected)
 
-        val actual = sut.getMovieDetails("1")
+        val actual = sut.getMovieOverview(movieId)
 
         assertEquals(expected, actual)
         verify(mockLocalDataSource).insert(details)
     }
 
     @Test
-    fun `get movie details when local data source has both movie and details`() = runBlockingTest {
-        val movie = aMovieEntity("1")
-        whenever(mockLocalDataSource.getMoviesById(movie.id)).thenReturn(movie)
+    fun `get movie overview when local data source has both movie and details`() = runBlockingTest {
+        val movieId = "1"
+        val movie = aMovieEntity(movieId)
+        whenever(mockLocalDataSource.getMovieById(movie.id)).thenReturn(movie)
         val details = aMovieDetailsEntity(movie.id)
         whenever(mockLocalDataSource.getMovieDetailsById(movie.id)).thenReturn(details)
-        val expected = aDetailedMovie()
+        val expected = aMovieOverview(movieId)
         whenever(mockDomainMapper.map(movie, details)).thenReturn(expected)
 
-        val actual = sut.getMovieDetails("1")
+        val actual = sut.getMovieOverview(movieId)
 
         assertEquals(expected, actual)
         verify(mockLocalDataSource, never()).insert(details)
@@ -138,7 +161,7 @@ class MoviesRepositoryTest {
 
     private suspend fun givenAMovieDetailsEntity(movieId: String): MovieDetailsEntity {
         val movieOverview = aMovieOverviewDTO()
-        whenever(mockRemoteDataSource.getOverviewDetails(movieId)).thenReturn(movieOverview)
+        whenever(mockRemoteDataSource.getOverview(movieId)).thenReturn(movieOverview)
         val movieDetailsEntity = aMovieDetailsEntity(movieId)
         whenever(mockLocalMapper.map(movieId, movieOverview)).thenReturn(movieDetailsEntity)
         return movieDetailsEntity
@@ -180,29 +203,36 @@ private fun aMovieOverviewDTO(): MovieOverviewDTO =
         genres = listOf("genre"),
     )
 
-private fun aListOfMovies(): List<Movie> =
-    listOf(aMovie())
-
-private fun aMovie(): Movie =
+private fun aMovie(id: String): Movie =
     Movie(
-        id = "id",
-        image = "image",
-        title = "title",
-        year = 2021,
+        id = id,
         details = null
     )
 
-private fun aDetailedMovie(): Movie =
+private fun movieDetails(id: String): Movie =
     Movie(
-        id = "id",
-        image = "image",
-        title = "title",
-        year = 2021,
+        id = id,
         details = Movie.Details(
-            rating = 7.5f,
-            runtime = 90,
-            outline = "outline",
-            summary = "summary",
-            genres = listOf("genre")
+            image = "image",
+            title = "title",
+            year = 2021,
+            overview = null
+        )
+    )
+
+private fun aMovieOverview(id: String): Movie =
+    Movie(
+        id = id,
+        details = Movie.Details(
+            image = "image",
+            title = "title",
+            year = 2021,
+            overview = Movie.Overview(
+                rating = 7.5f,
+                runtime = 90,
+                outline = "outline",
+                summary = "summary",
+                genres = listOf("genre")
+            )
         )
     )

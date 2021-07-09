@@ -5,9 +5,8 @@ data class MovieDetailsModel(
     val image: String,
     val title: String,
     val year: String,
-    val rating: String?,
+    val rating: String,
     val runtime: String,
-    val outline: String,
-    val summary: String?,
+    val summary: String,
     val genres: List<String>,
 )

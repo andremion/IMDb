@@ -14,9 +14,23 @@ private fun List<Movie>.mapToModel(): List<MovieModel> =
     map(Movie::mapToModel)
 
 private fun Movie.mapToModel(): MovieModel =
-    MovieModel(
-        id = id,
-        image = image,
-        title = title,
-        year = year.toString()
-    )
+    if (details == null) {
+        MovieModel(
+            isEnabled = false,
+            isLoading = true,
+            id = id,
+            image = "",
+            title = "",
+            year = ""
+        )
+    } else {
+        MovieModel(
+            isEnabled = true,
+            isLoading = false,
+            id = id,
+            image = details.image,
+            title = details.title,
+            year = details.year.toString()
+        )
+    }
+
