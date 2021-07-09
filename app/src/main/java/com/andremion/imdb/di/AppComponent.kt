@@ -3,6 +3,7 @@ package com.andremion.imdb.di
 import android.app.Application
 import android.content.Context
 import com.andremion.imdb.ImdbApp
+import com.andremion.imdb.data.di.DataModule
 import com.andremion.imdb.data.local.di.LocalModule
 import com.andremion.imdb.data.remote.di.RemoteModule
 import dagger.BindsInstance
@@ -17,7 +18,9 @@ import javax.inject.Singleton
         AppModule::class,
         LocalModule::class,
         RemoteModule::class,
+        DataModule::class,
         FeaturesModule::class,
+        WorkersModule::class,
     ]
 )
 @Singleton

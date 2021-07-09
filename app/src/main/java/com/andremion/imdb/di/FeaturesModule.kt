@@ -11,8 +11,8 @@ import dagger.android.ContributesAndroidInjector
 interface FeaturesModule {
 
     @ContributesAndroidInjector(modules = [MoviesModule::class])
-    fun bindsMoviesFragment(): MoviesFragment
+    fun contributesForMoviesFragment(): MoviesFragment
 
     @ContributesAndroidInjector(modules = [MovieDetailsModule::class])
-    fun bindsMovieDetailsFragment(): MovieDetailsFragment
+    fun contributesForMovieDetailsFragment(): MovieDetailsFragment
 }

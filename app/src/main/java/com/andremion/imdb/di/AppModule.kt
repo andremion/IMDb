@@ -2,14 +2,25 @@ package com.andremion.imdb.di
 
 import android.app.Application
 import android.content.Context
+import androidx.work.WorkManager
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import javax.inject.Singleton
 
-@Module
-interface AppModule {
+@Module(includes = [AppModule.Bindings::class])
+object AppModule {
 
-    @Binds
+    @Provides
     @Singleton
-    fun bindsContext(impl: Application): Context
+    fun providesWorkManager(application: Application): WorkManager =
+        WorkManager.getInstance(application)
+
+    @Module
+    interface Bindings {
+
+        @Binds
+        @Singleton
+        fun bindsContext(application: Application): Context
+    }
 }
