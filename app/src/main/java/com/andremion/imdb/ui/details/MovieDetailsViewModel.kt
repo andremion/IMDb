@@ -16,13 +16,14 @@ class MovieDetailsViewModel @Inject constructor(
     fun init(movieId: String) {
         _state.value = MovieDetailsViewState.Loading
         viewModelScope.launch {
-            _state.value = try {
-                val movieDetails = moviesRepository.getMovieOverview(movieId)
-                val model = modelMapper.map(movieDetails)
-                MovieDetailsViewState.Result(model)
-            } catch (e: Throwable) {
-                MovieDetailsViewState.Error(e)
-            }
+            _state.value =
+                try {
+                    val movie = moviesRepository.getMovieOverview(movieId)
+                    val model = modelMapper.map(movie)
+                    MovieDetailsViewState.Result(model)
+                } catch (e: Throwable) {
+                    MovieDetailsViewState.Error(e)
+                }
         }
     }
 }

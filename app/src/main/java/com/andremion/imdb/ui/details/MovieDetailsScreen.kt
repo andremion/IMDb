@@ -10,18 +10,9 @@ import com.bumptech.glide.RequestManager
 import javax.inject.Inject
 
 class MovieDetailsScreen @Inject constructor(
-    binding: FragmentMovieDetailsBinding,
+    private val binding: FragmentMovieDetailsBinding,
     private val imageLoader: RequestManager
 ) : BaseScreen<MovieDetailsViewEvent>() {
-
-    private val rootView = binding.root
-    private val imageLargeView = binding.imageLarge
-    private val imagePosterView = binding.content.imagePoster
-    private val titleView = binding.content.title
-    private val yearView = binding.content.year
-    private val ratingView = binding.content.rating
-    private val runtimeView = binding.content.runtime
-    private val summaryView = binding.content.summary
 
     init {
         binding.toolbar?.setupToolbarWithNavController()
@@ -37,22 +28,26 @@ class MovieDetailsScreen @Inject constructor(
                 onResult(state)
             }
             is MovieDetailsViewState.Error -> {
-                rootView.showError(state.error)
+                binding.root.showError(state.error)
             }
         }
     }
 
     private fun onResult(state: MovieDetailsViewState.Result) {
-        titleView.text = state.movieDetails.title
-        yearView.text = state.movieDetails.year
-        ratingView.isVisible = state.movieDetails.rating.isNotEmpty()
-        ratingView.text = state.movieDetails.rating
-        runtimeView.isVisible = state.movieDetails.runtime.isNotEmpty()
-        runtimeView.text = state.movieDetails.runtime
-        summaryView.text = state.movieDetails.summary
-        imageLoader.loadImage(state.movieDetails.image, imageLargeView)
-        imageLoader.loadImage(state.movieDetails.image, imagePosterView)
+        with(binding) {
+            imageLoader.loadImage(state.movieDetails.image, imageLarge)
+            content.title.text = state.movieDetails.title
+            content.year.text = state.movieDetails.year
+            content.rating.isVisible = state.movieDetails.rating.isNotEmpty()
+            content.rating.text = state.movieDetails.rating
+            content.runtime.text = state.movieDetails.runtime
+            content.summary.text = state.movieDetails.summary
+            imageLoader.loadImage(state.movieDetails.image, content.imagePoster)
+        }
+        _event.tryEmit(MovieDetailsViewEvent.ResultBound)
     }
 }
 
-sealed class MovieDetailsViewEvent
+sealed class MovieDetailsViewEvent {
+    object ResultBound : MovieDetailsViewEvent()
+}

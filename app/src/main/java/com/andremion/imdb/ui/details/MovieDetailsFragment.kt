@@ -32,6 +32,11 @@ class MovieDetailsFragment : Fragment() {
     private val viewModel: MovieDetailsViewModel by viewModels { viewModelFactory }
     private val args: MovieDetailsFragmentArgs by navArgs()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        postponeEnterTransition()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
         inflater.inflate(R.layout.fragment_movie_details, container, false)
 
@@ -41,7 +46,16 @@ class MovieDetailsFragment : Fragment() {
         viewModel.state
             .onEach(screen::render)
             .launchIn(viewLifecycleOwner.lifecycleScope)
+        screen.event
+            .onEach(::onEvent)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
 
         viewModel.init(args.movieId)
+    }
+
+    private fun onEvent(event: MovieDetailsViewEvent) {
+        when (event) {
+            MovieDetailsViewEvent.ResultBound -> startPostponedEnterTransition()
+        }
     }
 }
