@@ -5,6 +5,12 @@ import com.andremion.imdb.data.local.entity.MovieEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+/**
+ * Source of truth for local data.
+ * The local data are modelled as Entities and basically they are two:
+ * [MovieEntity] - It has the basic info about a movie
+ * [MovieDetailsEntity] - It has more detailed info about a movie
+ */
 class MoviesLocalDataSource @Inject constructor(
     private val moviesDAO: MoviesDAO,
     private val movieDetailsDAO: MovieDetailsDAO,

@@ -1,0 +1,190 @@
+TODO: Extract data module
+TODO: Use kotlin DSL to define dependencies and versions strings
+TODO: Finish up the orchestration of shared element transition
+TODO: Create Espresso tests to test the movies and details screen using mock-web-server or wiremock to mock the API.
+TODO: Unit test the view models.
+TODO: As soon as a movie is saved into db, schedule some worker to delete it after some amount of days to avoid it be outdated.
+
+Due to the API structure, I need fetch the details on demand from the movie list.
+When movie item is bound, I trigger an event that will end up starting a worker do fetch the details and save into db.
+Using Flow to notify the changes in the database.
+
+-> Get Most Popular Movies
+
+List
+    Image
+    Title
+    Year
+
+title/get-most-popular-movies
+
+	.url("https://imdb8.p.rapidapi.com/title/get-most-popular-movies")
+	.addHeader("x-rapidapi-key", "c7b5c71589mshd8fe55ece728136p17b542jsnda71e45979a6")
+	.addHeader("x-rapidapi-host", "imdb8.p.rapidapi.com")
+
+[
+    0:"/title/tt12801262/"
+    1:"/title/tt5433138/"
+    2:"/title/tt1321510/"
+    3:"/title/tt4733624/"
+    4:"/title/tt6334354/"
+    5:"/title/tt8332922/"
+    6:"/title/tt3228774/"
+    7:"/title/tt5109280/"
+    8:"/title/tt8385148/"
+]
+
+title/get-details
+
+	.url("https://imdb8.p.rapidapi.com/title/get-details?tconst=tt0944947")
+	.addHeader("x-rapidapi-key", "c7b5c71589mshd8fe55ece728136p17b542jsnda71e45979a6")
+	.addHeader("x-rapidapi-host", "imdb8.p.rapidapi.com")
+
+{7 items
+     "@type":"imdb.api.title.title"
+     "id":"/title/tt8332922/"
+     "image":{4 items
+         "height":1500
+         "id":"/title/tt8332922/images/rm417579265"
+         "url":"https://m.media-amazon.com/images/M/MV5BMTE2ODU4NDEtNmRjNS00OTk1LTg4NmMtNTAzYzVlNzJmYjgzXkEyXkFqcGdeQXVyODk4OTc3MTY@._V1_.jpg"
+         "width":1013
+     }
+     "runningTimeInMinutes":97
+     "title":"A Quiet Place Part II"
+     "titleType":"movie"
+     "year":2020
+}
+
+-> Get Movie Details
+Detail
+    Image
+    Rating/None
+    Title
+    Year
+    Runtime
+    Summary/Outline
+    Genres
+
+title/get-overview-details
+
+save each one overview detail into db
+
+	.url("https://imdb8.p.rapidapi.com/title/get-overview-details?tconst=tt12801262")
+	.addHeader("x-rapidapi-key", "c7b5c71589mshd8fe55ece728136p17b542jsnda71e45979a6")
+	.addHeader("x-rapidapi-host", "imdb8.p.rapidapi.com")
+
+{8 items
+    "id":"/title/tt12801262/"
+    "title":{7 items
+        "@type":"imdb.api.title.title"
+        "id":"/title/tt12801262/"
+        "image":{
+            "height":1500
+            "id":"/title/tt0944947/images/rm4204167425"
+            "url":"https://m.media-amazon.com/images/M/MV5BYTRiNDQwYzAtMzVlZS00NTI5LWJjYjUtMzkwNTUzMWMxZTllXkEyXkFqcGdeQXVyNDIzMzcwNjc@._V1_.jpg"
+            "width":1102
+        }
+        "runningTimeInMinutes":95
+        "title":"Luca"
+        "titleType":"movie"
+        "year":2021
+    }
+    "certificates":{...}1 item
+    "ratings":{4 items
+       "canRate":true
+       "rating":7.5
+       "ratingCount":45331
+       "topRank":1177
+    }
+    "genres":[...]5 items
+    "releaseDate":"2021-06-18"
+    "plotOutline":{2 items
+        "id":"/title/tt12801262/plot/po5240778"
+        "text":"On the Italian Riviera, an unlikely but strong friendship grows between a human being and a sea monster disguised as a human."
+    }
+    "plotSummary":{2 items
+        "id":"/title/tt12801262/plot/ps5239772"
+        "text":"A young boy experiences an unforgettable seaside summer on the Italian Riviera filled with gelato, pasta and endless scooter rides. Luca shares these adventures with his newfound best friend, but all the fun is threatened by a deeply-held secret: he is a sea monster from another world just below the ocean's surface."
+    }
+}
+
+
+title/find
+
+	.url("https://imdb8.p.rapidapi.com/title/find?q=luc")
+	.addHeader("x-rapidapi-key", "c7b5c71589mshd8fe55ece728136p17b542jsnda71e45979a6")
+	.addHeader("x-rapidapi-host", "imdb8.p.rapidapi.com")
+
+{
+     "@meta":{3 items
+         "operation":"Search"
+         "requestId":"5b555e97-a650-4b8a-9988-ea6fd35f423b"
+         "serviceTimeMs":107.826039
+     }
+     "@type":"imdb.api.find.response"
+     "query":"luc"
+     "results":[20 items
+     0:{6 items
+         "id":"/title/tt5085394/"
+         "runningTimeInMinutes":12
+         "title":"Luc"
+         "titleType":"short"
+         "year":2015
+         "principals":[...]3 items
+     }
+     1:{...}6 items
+     2:{...}4 items
+     3:{5 items
+         "disambiguation":"VII"
+         "id":"/name/nm9598642/"
+         "legacyNameText":"Luc (VII)"
+         "name":"Luc"
+         "knownFor":[...]1 item
+     }
+     4:{7 items
+         "id":"/title/tt12801262/"
+         "image":{4 items
+              "height":3000
+              "id":"/title/tt12801262/images/rm3522740225"
+              "url":"https://m.media-amazon.com/images/M/MV5BZTQyNTU0MDktYTFkYi00ZjNhLWE2ODctMzBkM2U1ZTk3YTMzXkEyXkFqcGdeQXVyNTI4MzE4MDU@._V1_.jpg"
+              "width":2025
+          }
+         "runningTimeInMinutes":95
+         "title":"Luca"
+         "titleType":"movie"
+         "year":2021
+         "principals":[...]3 items
+     }
+     5:{10 items
+         "id":"/title/tt4052886/"
+         "image":{...}4 items
+         "runningTimeInMinutes":42
+         "nextEpisode":"/title/tt4932378/"
+         "numberOfEpisodes":93
+         "seriesStartYear":2016
+         "title":"Lucifer"
+         "titleType":"tvSeries"
+         "year":2016
+         "principals":[...]3 items
+     }
+     6:{...}6 items
+     7:{...}6 items
+     8:{...}10 items
+     9:{...}6 items
+     10:{...}7 items
+     11:{...}5 items
+     12:{...}8 items
+     13:{...}7 items
+     14:{...}5 items
+     15:{...}5 items
+     16:{...}7 items
+     17:{...}7 items
+     18:{...}11 items
+     19:{...}8 items
+     ]
+     "types":[2 items
+         0:"title"
+         1:"name"
+     ]
+}
+

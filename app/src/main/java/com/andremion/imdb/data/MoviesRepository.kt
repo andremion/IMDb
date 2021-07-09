@@ -13,6 +13,10 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+/**
+ * Orchestrates data from/to the data sources.
+ * It maps the returned data to domain to not expose remote and local models to the higher level layers.
+ */
 class MoviesRepository @Inject constructor(
     private val localDataSource: MoviesLocalDataSource,
     private val remoteDataSource: MoviesRemoteDataSource,
