@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import androidx.transition.TransitionInflater
 import com.andremion.imdb.R
 import com.andremion.imdb.di.ViewModelFactory
 import com.andremion.imdb.ui.movies.MoviesFragment
@@ -35,6 +36,7 @@ class MovieDetailsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         postponeEnterTransition()
+        setupTransition()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
@@ -51,6 +53,11 @@ class MovieDetailsFragment : Fragment() {
             .launchIn(viewLifecycleOwner.lifecycleScope)
 
         viewModel.init(args.movieId)
+    }
+
+    private fun setupTransition() {
+        val inflater = TransitionInflater.from(requireContext())
+        sharedElementEnterTransition = inflater.inflateTransition(android.R.transition.move)
     }
 
     private fun onEvent(event: MovieDetailsViewEvent) {

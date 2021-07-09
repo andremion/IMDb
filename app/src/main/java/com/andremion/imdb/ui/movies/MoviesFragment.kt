@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.andremion.imdb.R
 import com.andremion.imdb.di.ViewModelFactory
 import com.andremion.imdb.ui.details.MovieDetailsFragment
+import com.andremion.imdb.ui.transition.toFragmentNavigatorExtras
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -60,7 +61,8 @@ class MoviesFragment : Fragment() {
                 val navController = movieDetailsContainer?.findNavController() ?: findNavController()
 
                 val showMovieDetail = MoviesFragmentDirections.showMovieDetail(event.movieId)
-                navController.navigate(showMovieDetail)
+                val extras = event.binding.toFragmentNavigatorExtras()
+                navController.navigate(showMovieDetail, extras)
             }
         }
     }

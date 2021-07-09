@@ -7,6 +7,7 @@
     <fragment
         android:id="@+id/movie_details_fragment"
         android:name="com.andremion.imdb.ui.details.MovieDetailsFragment"
+        android:label=""
         tools:layout="@layout/fragment_movie_details">
         <argument
             android:name="movie_id"

@@ -8,19 +8,20 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.andremion.imdb.databinding.FragmentMoviesItemBinding
 import com.andremion.imdb.ui.movies.model.MovieModel
+import com.andremion.imdb.ui.transition.setupSharedTransitionNames
 import com.andremion.imdb.util.loadImage
 import com.bumptech.glide.RequestManager
 
 class MoviesAdapter(
     private val imageLoader: RequestManager,
     private val onItemBind: (movie: MovieModel) -> Unit,
-    private val onItemClick: (movie: MovieModel) -> Unit
+    private val onItemClick: (movie: MovieModel, binding: FragmentMoviesItemBinding) -> Unit
 ) : ListAdapter<MovieModel, MovieViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val binding = FragmentMoviesItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MovieViewHolder(imageLoader, binding) { position ->
-            onItemClick(getItem(position))
+            onItemClick(getItem(position), binding)
         }
     }
 
@@ -48,6 +49,7 @@ class MovieViewHolder(
             imageLoader.loadImage(movie.image, image)
             title.text = movie.title
             year.text = movie.year
+            setupSharedTransitionNames(movie)
         }
     }
 }

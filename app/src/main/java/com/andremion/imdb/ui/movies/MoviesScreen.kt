@@ -2,6 +2,7 @@ package com.andremion.imdb.ui.movies
 
 import androidx.core.view.isVisible
 import com.andremion.imdb.databinding.FragmentMoviesBinding
+import com.andremion.imdb.databinding.FragmentMoviesItemBinding
 import com.andremion.imdb.ui.movies.model.MovieModel
 import com.andremion.imdb.util.mvvm.BaseScreen
 import com.andremion.imdb.util.setupToolbarWithNavController
@@ -17,7 +18,7 @@ class MoviesScreen @Inject constructor(
     private val moviesAdapter = MoviesAdapter(
         imageLoader,
         onItemBind = { movie -> _event.tryEmit(MoviesViewEvent.MovieBound(movie)) },
-        onItemClick = { movie -> _event.tryEmit(MoviesViewEvent.MovieClicked(movie.id)) }
+        onItemClick = { movie, binding -> _event.tryEmit(MoviesViewEvent.MovieClicked(movie.id, binding)) }
     )
 
     init {
@@ -57,5 +58,5 @@ class MoviesScreen @Inject constructor(
 
 sealed class MoviesViewEvent {
     data class MovieBound(val movie: MovieModel) : MoviesViewEvent()
-    data class MovieClicked(val movieId: String) : MoviesViewEvent()
+    data class MovieClicked(val movieId: String, val binding: FragmentMoviesItemBinding) : MoviesViewEvent()
 }

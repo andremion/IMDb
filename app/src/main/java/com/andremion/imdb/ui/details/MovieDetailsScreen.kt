@@ -2,6 +2,7 @@ package com.andremion.imdb.ui.details
 
 import androidx.core.view.isVisible
 import com.andremion.imdb.databinding.FragmentMovieDetailsBinding
+import com.andremion.imdb.ui.transition.setupSharedTransitionNames
 import com.andremion.imdb.util.loadImage
 import com.andremion.imdb.util.mvvm.BaseScreen
 import com.andremion.imdb.util.setupToolbarWithNavController
@@ -38,13 +39,19 @@ class MovieDetailsScreen @Inject constructor(
             imageLoader.loadImage(state.movieDetails.image, imageLarge)
             content.title.text = state.movieDetails.title
             content.year.text = state.movieDetails.year
-            content.rating.isVisible = state.movieDetails.rating.isNotEmpty()
+            content.cardRating.isVisible = state.movieDetails.rating.isNotEmpty()
             content.rating.text = state.movieDetails.rating
             content.runtime.text = state.movieDetails.runtime
             content.summary.text = state.movieDetails.summary
-            imageLoader.loadImage(state.movieDetails.image, content.imagePoster)
+            imageLoader.loadImage(
+                image = state.movieDetails.image,
+                imageView = content.imagePoster,
+                withCrossFade = false
+            ) {
+                _event.tryEmit(MovieDetailsViewEvent.ResultBound)
+            }
+            setupSharedTransitionNames(state.movieDetails)
         }
-        _event.tryEmit(MovieDetailsViewEvent.ResultBound)
     }
 }
 
