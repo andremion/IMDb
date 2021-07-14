@@ -58,11 +58,15 @@ class MoviesFragment : Fragment() {
                 // Leaving this not using view binding as it relies on if the view is visible
                 // based on the current layout configuration (layout, layout-sw600dp)
                 val movieDetailsContainer: View? = view?.findViewById(R.id.movie_details_nav_host_container)
-                val navController = movieDetailsContainer?.findNavController() ?: findNavController()
 
                 val showMovieDetail = MoviesFragmentDirections.showMovieDetail(event.movieId)
                 val extras = event.binding.toFragmentNavigatorExtras()
-                navController.navigate(showMovieDetail, extras)
+                if (movieDetailsContainer != null) {
+                    movieDetailsContainer.findNavController()
+                        .navigate(R.id.movie_details_fragment, showMovieDetail.arguments, null, extras)
+                } else {
+                    findNavController().navigate(showMovieDetail, extras)
+                }
             }
         }
     }

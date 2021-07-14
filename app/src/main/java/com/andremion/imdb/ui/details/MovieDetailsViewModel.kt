@@ -14,6 +14,8 @@ class MovieDetailsViewModel @Inject constructor(
 ) : BaseViewModel<MovieDetailsViewState>(MovieDetailsViewState.Idle) {
 
     fun init(movieId: String) {
+        if (movieId.isBlank()) return
+
         _state.value = MovieDetailsViewState.Loading
         viewModelScope.launch {
             _state.value =
