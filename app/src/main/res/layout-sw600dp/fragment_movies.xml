@@ -7,23 +7,10 @@
     android:fitsSystemWindows="true"
     tools:context="com.andremion.imdb.ui.home.HomeActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:theme="@style/Theme.IMDb.AppBarOverlay">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            app:popupTheme="@style/Theme.IMDb.PopupOverlay" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.constraintlayout.widget.Guideline
@@ -40,6 +27,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/container_margin"
             android:layout_marginEnd="@dimen/container_margin"
+            android:fitsSystemWindows="true"
             app:layoutManager="LinearLayoutManager"
             app:layout_constraintEnd_toStartOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
@@ -51,6 +39,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/container_margin"
+            android:fitsSystemWindows="true"
             app:defaultNavHost="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/guideline"

@@ -51,23 +51,45 @@ class MoviesFragment : Fragment() {
     }
 
     private fun onEvent(event: MoviesViewEvent) {
+        // Trigger navigation based on if you have a single pane layout or two pane layout.
+        // Leaving this not using view binding as it relies on if the view is visible
+        // based on the current layout configuration (layout, layout-sw600dp)
+        val movieDetailsContainer: View? = view?.findViewById(R.id.movie_details_nav_host_container)
         when (event) {
-            is MoviesViewEvent.MovieBound -> viewModel.onMovieBound(event.movie)
-            is MoviesViewEvent.MovieClicked -> {
-                // Trigger navigation based on if you have a single pane layout or two pane layout.
-                // Leaving this not using view binding as it relies on if the view is visible
-                // based on the current layout configuration (layout, layout-sw600dp)
-                val movieDetailsContainer: View? = view?.findViewById(R.id.movie_details_nav_host_container)
-
-                val showMovieDetail = MoviesFragmentDirections.showMovieDetail(event.movieId)
-                val extras = event.binding.toFragmentNavigatorExtras()
-                if (movieDetailsContainer != null) {
-                    movieDetailsContainer.findNavController()
-                        .navigate(R.id.movie_details_fragment, showMovieDetail.arguments, null, extras)
-                } else {
-                    findNavController().navigate(showMovieDetail, extras)
-                }
+            is MoviesViewEvent.MovieBound -> {
+                onMovieBind(event, movieDetailsContainer)
             }
+            is MoviesViewEvent.MovieClicked -> {
+                onMovieClick(event, movieDetailsContainer)
+            }
+        }
+    }
+
+    private fun onMovieBind(event: MoviesViewEvent.MovieBound, movieDetailsContainer: View?) {
+        val shouldNavigateToDetails = viewModel.shouldNavigateToDetails(
+            position = event.position,
+            movie = event.movie,
+            isTablet = movieDetailsContainer != null
+        )
+        if (shouldNavigateToDetails) {
+            val showMovieDetail = MoviesFragmentDirections.showMovieDetail(event.movie.id)
+            movieDetailsContainer
+                ?.findNavController()
+                ?.navigate(R.id.movie_details_fragment, showMovieDetail.arguments, null)
+        } else {
+            viewModel.onMovieBound(event.movie)
+        }
+    }
+
+    private fun onMovieClick(event: MoviesViewEvent.MovieClicked, movieDetailsContainer: View?) {
+        val showMovieDetail = MoviesFragmentDirections.showMovieDetail(event.movieId)
+        val extras = event.binding.toFragmentNavigatorExtras()
+        if (movieDetailsContainer != null) {
+            movieDetailsContainer
+                .findNavController()
+                .navigate(R.id.movie_details_fragment, showMovieDetail.arguments, null, extras)
+        } else {
+            findNavController().navigate(showMovieDetail, extras)
         }
     }
 }

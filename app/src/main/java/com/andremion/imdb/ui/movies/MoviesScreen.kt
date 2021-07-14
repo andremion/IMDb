@@ -17,12 +17,12 @@ class MoviesScreen @Inject constructor(
 
     private val moviesAdapter = MoviesAdapter(
         imageLoader,
-        onItemBind = { movie -> _event.tryEmit(MoviesViewEvent.MovieBound(movie)) },
+        onItemBind = { position, movie -> _event.tryEmit(MoviesViewEvent.MovieBound(position, movie)) },
         onItemClick = { movie, binding -> _event.tryEmit(MoviesViewEvent.MovieClicked(movie.id, binding)) }
     )
 
     init {
-        binding.toolbar.setupToolbarWithNavController()
+        binding.toolbar?.setupToolbarWithNavController()
         binding.movieList.adapter = moviesAdapter
     }
 
@@ -57,6 +57,6 @@ class MoviesScreen @Inject constructor(
 }
 
 sealed class MoviesViewEvent {
-    data class MovieBound(val movie: MovieModel) : MoviesViewEvent()
+    data class MovieBound(val position: Int, val movie: MovieModel) : MoviesViewEvent()
     data class MovieClicked(val movieId: String, val binding: FragmentMoviesItemBinding) : MoviesViewEvent()
 }

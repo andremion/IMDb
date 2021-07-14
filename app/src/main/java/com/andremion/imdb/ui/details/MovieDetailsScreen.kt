@@ -16,7 +16,7 @@ class MovieDetailsScreen @Inject constructor(
 ) : BaseScreen<MovieDetailsViewEvent>() {
 
     init {
-        binding.toolbar?.setupToolbarWithNavController()
+        binding.toolbar.setupToolbarWithNavController()
     }
 
     fun render(state: MovieDetailsViewState) {

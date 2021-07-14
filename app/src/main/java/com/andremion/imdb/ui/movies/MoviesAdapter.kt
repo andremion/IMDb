@@ -14,7 +14,7 @@ import com.bumptech.glide.RequestManager
 
 class MoviesAdapter(
     private val imageLoader: RequestManager,
-    private val onItemBind: (movie: MovieModel) -> Unit,
+    private val onItemBind: (position: Int, movie: MovieModel) -> Unit,
     private val onItemClick: (movie: MovieModel, binding: FragmentMoviesItemBinding) -> Unit
 ) : ListAdapter<MovieModel, MovieViewHolder>(DIFF_CALLBACK) {
 
@@ -28,7 +28,7 @@ class MoviesAdapter(
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         val movie = getItem(position)
         holder.bind(movie)
-            .also { onItemBind(movie) }
+            .also { onItemBind(position, movie) }
     }
 }
 

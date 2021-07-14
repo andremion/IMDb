@@ -47,6 +47,9 @@ class MoviesViewModel @Inject constructor(
             workManager.enqueue(workRequest)
         }
     }
+
+    fun shouldNavigateToDetails(position: Int, movie: MovieModel, isTablet: Boolean): Boolean =
+        position == 0 && !movie.isLoading && isTablet
 }
 
 sealed class MoviesViewState {
